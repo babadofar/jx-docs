@@ -54,6 +54,23 @@ chmod go-r k3s.yaml
 export KUBECONFIG=${PWD}/k3s.yaml
 cat "$KUBECONFIG"
 ```
+
+
+```fish
+multipass info k3sVM
+# Export the IP address
+set -x K3S_IP (multipass info k3sVM | grep IPv4 | awk '{print $2}')
+# export `kubeconfig` file
+multipass exec k3sVM sudo cat /etc/rancher/k3s/k3s.yaml > k3s.yaml
+# replace the ip adress with the external
+sed -i '' "s/127.0.0.1/{$K3S_IP}/" k3s.yaml
+# set permissions on the kubeconfig file
+chmod go-r k3s.yaml
+# set KUBECONFIG
+set -x KUBECONFIG {$PWD}/k3s.yaml
+cat "$KUBECONFIG"
+
+```
 #### Verify k3s available
 To verify that k3s has been installed successfully, and configured run:
 
